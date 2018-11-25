@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Baking Bootstrap Snippets with Jade</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Baking Bootstrap Snippets with Jade">
+    <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/flatly/bootstrap.min.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+    function update_mod(userid)
+    { 
+      $.ajax({
+                   type : 'POST',
+                   url : '/update_data',
+                   data : {userid:userid},
+                   success: function(data){
+                     // alert(data.name);
+                    // $(#name).val()=data.name;
+                    $('#user_id').val(data._id);
+                    $('#email').val(data.email);
+                    $('#name').val(data.name);
+                    $('#gender').val(data.gender);
+                    $('#phoneno').val(data.phoneno);
+                    $('#myModal').modal('show');
+                   }
+                 });
+    }
+    function func_delete(userid)
+    {
+    $.ajax({
+                   type : 'POST',
+                   url : '/userdelete',
+                   data : {userid:userid},
+                   success: function(data){
+                      if(data==1)
+                        alert("user deleted successfully");
+                      else
+                        alert("cant delete the user");
+                      window.location.reload();
+                   }
+                 });
+    }
+  
+    /*collection.remove({ '_id' : userToDelete }, function(err) {
+    res.send((err === null) ? { msg: '' } : { msg:'error: ' + err });
+  });*/
+    $(document).ready(function(){
+
+              $("#update_user").click(function(){
+               var user_id  = $("#user_id").val();                              
+               var name     = $('#name').val();
+               var gender   = $('#gender').val();
+               var phoneno  = $('#phoneno').val();    
+               //alert(user_id+name+gender+phoneno);          
+               //var userdata ={'user_id': user_id,'name':name,'gender':gender,'phoneno':phoneno};
+                 $.ajax({
+                   type : 'POST',
+                   url : '/updateuser',
+                   data : {user_id: user_id,name:name,gender:gender,phoneno:phoneno},
+                   success: function(data){
+                      if(data==1)
+                            alert("user updated successfully");
+                          else
+                            alert("cant updated the user");
+                          window.location.reload();
+                   }
+                 });
+             });
+     });
+    </script>
+  </head>
+  <body style="padding-bottom:10rem;">
+    <nav role="navigation" class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" data-toggle="collapse" data-target="#navbar-inverse" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    </button>
+    <a href="#" class="navbar-brand">USER DATA</a>
+  </div>
+  <div id="navbar-inverse" class="collapse navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="login">Home page</a></li>
+      <li><a href="register">logout</a></li>
+    </ul>
+  </div>
+</nav>
+    <div class="container">
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          
+            <form class="form-horizontal" action="">
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="email">Email:</label>
+                <div class="col-sm-10">
+                  <p class="form-control-static"><input type="text" class="form-control" id="email" name="email" readonly></p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="name">Name:</label>
+                <div class="col-sm-10">          
+                <input type="text" class="form-control" id="name" name="name">
+                </div>
+              </div>
+                 <div class="form-group">
+                <label class="control-label col-sm-2" for="gnder">Gender:</label>
+                <div class="col-sm-10">          
+                <input type="text" class="form-control" id="gender" name="gender">
+                </div>
+              </div>
+                 <div class="form-group">
+                <label class="control-label col-sm-2" for="phone">Phone No:</label>
+                <div class="col-sm-10">          
+                <input type="text" class="form-control" id="phoneno" name="phoneno">
+                </div>
+              </div>
+              <input type="hidden" class="form-control" id="user_id" name="user_id">
+              <div class="form-group">        
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-default" id="update_user">Update</button>
+                </div>
+              </div>
+            </form>
+
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</div>
+
+
+        <table class="table table-bordered">
+          <tr class="bg-primary">
+            <td>SLNO</td>
+            <td>NAME</td>
+            <td>EMAIL</td>
+            <td>GENDER</td>
+            <td>PHONE NO</td>
+            <td>UPDATE</td>
+            <td>DELETE</td>
+          </tr>
+        
+            <% for(var i=0; i < user.length; i++) 
+            {
+            %>
+            <tr>
+                 <td><%= i+1 %></td>
+                 <td><%= user[i].name %></td>
+                 <td><%= user[i].email %></td>
+                 <td><%= user[i].gender %></td>
+                 <td><%= user[i].phoneno %></td>
+                 <td><button type="button" class="btn btn-warning" id="update" onclick="update_mod('<%= user[i]._id %>')">update</button></td>
+                 <td><button type="button" class="btn btn-danger" onclick="func_delete('<%= user[i]._id %>')">delete</button></td>
+            </tr>
+            <%
+            }
+             %>
+        </table>      
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
